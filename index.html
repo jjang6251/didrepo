@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DID-JWT Demo</title>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+</head>
+<body>
+    <h1>DID-JWT Demo</h1>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+
+    <h2>Create DID JWT</h2>
+    <input type="text" id="did" placeholder="Enter DID">
+    <button onclick="createJWT()">Create JWT</button>
+
+    <h2>Verify DID JWT</h2>
+    <input type="text" id="jwt" placeholder="Enter JWT">
+    <button onclick="verifyJWT()">Verify JWT</button>
+    <div id="verificationResult"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

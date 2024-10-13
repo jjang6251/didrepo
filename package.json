@@ -1,0 +1,22 @@
+{
+  "name": "did-jwt-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@ethersproject/providers": "^5.7.2",
+    "did-jwt": "^8.0.4",
+    "did-jwt-vc": "^4.0.4",
+    "did-resolver": "^4.1.0",
+    "ethr-did": "^3.0.21",
+    "ethr-did-resolver": "^10.1.10",
+    "express": "^4.21.0",
+    "web3": "^4.13.0"
+  }
+}
