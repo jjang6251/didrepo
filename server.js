@@ -4,22 +4,27 @@ const { createVerifiableCredentialJwt, createVerifiablePresentationJwt, verifyCr
 const { Resolver } = require('did-resolver');
 const { getResolver } = require('ethr-did-resolver');
 const { JsonRpcProvider } = require('@ethersproject/providers');
+const dotenv = require('dotenv');
+const cors = require('cors');
+
+dotenv.config();
 
 // Express 서버 초기화
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Sepolia 네트워크에 대한 이더리움 DID 설정 (Infura 사용)
 const providerConfig = {
     networks: [{
         name: "sepolia",
-        rpcUrl: "https://sepolia.infura.io/v3/bfaf1bc35b654d07b39bbb723e1f937d",
-        registry: "0xdca7ef03e98e0dc2b855be647c39abe984fcf21b" // Sepolia의 DID 레지스트리 주소
+        rpcUrl: process.env.SEPOLIA_RPCURL,
+        registry: process.env.DIDREGISTRY
     },
     {
         name: "mainnet",
-        rpcUrl: "https://mainnet.infura.io/v3/bfaf1bc35b654d07b39bbb723e1f937d",
-        registry: "0xdca7ef03e98e0dc2b855be647c39abe984fcf21b" // Sepolia의 DID 레지스트리 주소
+        rpcUrl: process.env.MAINNET_RPCURL,
+        registry: process.env.DIDREGISTRY
     }
 ]
 };
@@ -28,9 +33,9 @@ const resolver = new Resolver(getResolver(providerConfig));
 
 // 발급자의 DID와 비밀 키 설정 (이슈어)
 const issuer = new EthrDID({
-    identifier: '0x42A905527d56146fF7b1895a6780980eC8B2D383', // Sepolia 네트워크의 DID
+    identifier: process.env.ISSUER_DID,
     provider: new JsonRpcProvider(providerConfig.networks[0].rpcUrl), // Sepolia 프로바이더 사용
-    privateKey: 'e4d7baeb8df68a0962c69351ee64bdd21e43c94206aae5b66423c49d64353447'  // 발급자의 프라이빗 키
+    privateKey: process.env.ISSUER_PRIVATE_KEY
 });
 
 // VC 발급 API
@@ -47,7 +52,8 @@ app.post('/issue-vc', async (req, res) => {
             credentialSubject: {
                 degree: {
                     type: 'BachelorDegree',
-                    name: 'Bachelor of Science in Computer Science'
+                    name: 'Bachelor of Science in Computer Science',
+                    nickname: 'jjang'
                 }
             }
         }

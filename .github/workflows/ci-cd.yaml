@@ -1,0 +1,42 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login Dockerhub
+      
+      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}      
+
+    - name: Build the Docker image
+      run: |
+        docker build --build-arg SEPOLIA_RPCURL=${{secrets.SEPOLIA_RPCURL}} --build-arg DIDREGISTRY=${{secrets.DIDREGISTRY}} --build-arg MAINNET_RPCURL=${{secrets.MAINNET_RPCURL}} --build-arg ISSUER_DID=${{secrets.ISSUER_DID}} --build-arg ISSUER_PRIVATE_KEY=${{secrets.ISSUER_PRIVATE_KEY}} -t iotping .
+
+    - name: taging
+      run: docker tag iotping:latest ${{ secrets.DOCKERHUB_USERNAME }}/iotping:latest
+
+    - name: Push to Dockerhub
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/iotping:latest
+    
+  deploy:
+
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+    - name: Pull Docker image
+      run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/iotping:latest
+    - name: Delete Old docker container
+      run: sudo docker rm -f iotping-container || true
+    - name: Run Docker Container
+      run: sudo docker run -d -p 3000:3000 --name iotping-container ${{ secrets.DOCKERHUB_USERNAME }}/iotping
