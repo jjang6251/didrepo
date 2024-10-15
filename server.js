@@ -18,12 +18,12 @@ app.use(cors());
 const providerConfig = {
     networks: [{
         name: "sepolia",
-        rpcUrl: process.env.SEPOLIA_RPCURL,
+        rpcUrl: decodeURIComponent(process.env.SEPOLIA_RPCURL),
         registry: process.env.DIDREGISTRY
     },
     {
         name: "mainnet",
-        rpcUrl: process.env.MAINNET_RPCURL,
+        rpcUrl: decodeURIComponent(process.env.MAINNET_RPCURL),
         registry: process.env.DIDREGISTRY
     }
 ]
