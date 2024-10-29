@@ -4,6 +4,7 @@ const { createVerifiableCredentialJwt, createVerifiablePresentationJwt, verifyCr
 const { Resolver } = require('did-resolver');
 const { getResolver } = require('ethr-did-resolver');
 const { JsonRpcProvider } = require('@ethersproject/providers');
+const axios = require('axios');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
@@ -26,7 +27,7 @@ const providerConfig = {
         rpcUrl: decodeURIComponent(process.env.MAINNET_RPCURL),
         registry: process.env.DIDREGISTRY
     }
-]
+    ]
 };
 
 const resolver = new Resolver(getResolver(providerConfig));
@@ -40,33 +41,64 @@ const issuer = new EthrDID({
 
 // VC 발급 API
 app.post('/issue-vc', async (req, res) => {
-    const { userDid } = req.body;
+    const { userDid, userToken } = req.body;
 
-    // VC 발급을 위한 페이로드 생성
-    const vcPayload = {
-        sub: `did:ethr:${userDid}`,  // 사용자 DID를 Sepolia 네트워크 형식으로
-        nbf: Math.floor(Date.now() / 1000),  // 발급일자
-        vc: {
-            '@context': ['https://www.w3.org/2018/credentials/v1'],
-            type: ['VerifiableCredential'],
-            credentialSubject: {
-                degree: {
-                    type: 'BachelorDegree',
-                    name: 'Bachelor of Science in Computer Science',
-                    nickname: 'jjang'
-                }
-            }
-        }
+    console.log(userToken);
+
+    const kakao_url = "https://kapi.kakao.com/v2/user/me";
+
+    const headers = {
+        'Authorization': `Bearer ${userToken}`,  // 필요한 경우 토큰 추가
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
     };
 
+
+
     try {
-        // VC JWT 생성
-        const vcJwt = await createVerifiableCredentialJwt(vcPayload, issuer);
-        res.json({ vcJwt });
+
+        const response = await axios.get(kakao_url, { headers });
+        const response_user = response.data;
+
+        const userInfo = {
+            username: response_user.kakao_account.name,
+            userphone: response_user.kakao_account.phone_number
+        }
+
+        const vcPayload = {
+            sub: `did:ethr:${userDid}`,  // 사용자 DID를 Sepolia 네트워크 형식으로
+            nbf: Math.floor(Date.now() / 1000),  // 발급일자
+            vc: {
+                '@context': ['https://www.w3.org/2018/credentials/v1'],
+                type: ['VerifiableCredential'],
+                credentialSubject: {
+                    degree: {
+                        type: 'BachelorDegree',
+                        name: 'Bachelor of Science in Computer Science',
+                        userInfo
+                    }
+                }
+            }
+        };
+
+        try {
+            // VC JWT 생성
+            const vcJwt = await createVerifiableCredentialJwt(vcPayload, issuer);
+            res.json({ vcJwt });
+        } catch (error) {
+            console.error("VC 발급 오류:", error);
+            res.status(500).json({ error: "VC 발급 오류" });
+        }
+
+
     } catch (error) {
-        console.error("VC 발급 오류:", error);
-        res.status(500).json({ error: "VC 발급 오류" });
+        console.error(error);
+        res.status(500).json({ message: 'Failed to fetch data from external API' });
     }
+
+
+
+    // VC 발급을 위한 페이로드 생성
+
 });
 
 // VP 발급 API

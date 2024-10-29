@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
+    "axios": "^1.7.7",
     "cors": "^2.8.5",
     "did-jwt": "^8.0.4",
     "did-jwt-vc": "^4.0.4",
