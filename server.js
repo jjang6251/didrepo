@@ -131,7 +131,13 @@ app.post('/verify-vc', async (req, res) => {
     try {
         // VC JWT 검증
         const verifiedVC = await verifyCredential(vcJwt, resolver);
-        res.json({ verifiedVC });
+        console.log(verifiedVC);
+
+        // username 값 추출
+        const username = verifiedVC.payload.vc.credentialSubject.degree.userInfo.username;
+        console.log(username);
+
+        res.json({ username });
     } catch (error) {
         console.error("VC 검증 오류:", error);
         res.status(500).json({ error: "VC 검증 오류" });
