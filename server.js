@@ -53,7 +53,7 @@ async function verifyToken(req, res, next) {
     // console.log(token);
 
     if (!token) {
-        return res.status(403).json('토큰이 없습니다!!');
+        return res.status(401).json('토큰이 없습니다!!');
     }
 
     try {
@@ -70,7 +70,7 @@ async function verifyToken(req, res, next) {
         next();
     } catch (error) {
         console.error("VC 검증 오류:", error);
-        res.status(500).json({ error: "VC 검증 오류" });
+        res.status(401).json({ error: "VC 검증 오류" });
     }
 }
 
