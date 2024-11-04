@@ -12,6 +12,7 @@
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
     "axios": "^1.7.7",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "did-jwt": "^8.0.4",
     "did-jwt-vc": "^4.0.4",
@@ -20,6 +21,9 @@
     "ethr-did": "^3.0.21",
     "ethr-did-resolver": "^10.1.10",
     "express": "^4.21.0",
+    "mysql2": "^3.11.3",
+    "sequelize": "^6.37.5",
+    "sequelize-cli": "^6.6.2",
     "web3": "^4.13.0"
   }
 }
