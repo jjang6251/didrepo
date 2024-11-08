@@ -271,7 +271,12 @@ app.get('/camera/:id', async (req, res) => {
             // res.status(200).json({ip: findData.ip});
             const targetUrl = `http://${findData.ip}`; // 절대 경로로 URL 설정
             console.log(`Redirecting to: ${targetUrl}`);
-            return res.redirect(targetUrl);
+            res.cookie('access_token', 'iotping');
+
+            const result = {
+                address: targetUrl
+            }
+            return res.status(200).json(result);
         } else {
             res.status(404).json({ message: "Data not found" });
         }
