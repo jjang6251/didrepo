@@ -8,27 +8,7 @@
         async function openCamera() {
             const token = 'your_authorization_token'; // 실제 토큰 값으로 변경
 
-            try {
-                const response = await fetch('https://mongoljune.shop/camera/2', { // `id` 부분은 원하는 값으로 변경
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `${token}`, // Authorization 헤더에 토큰 추가
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.address) {
-                    // 주소를 새 탭에서 엽니다
-                    window.open(data.address, '_blank');
-                } else {
-                    alert('Camera address not found.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while fetching the camera address.');
-            }
+            window.open("http://222.118.185.155:9000", '_blank');
         }
     </script>
 </head>

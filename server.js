@@ -287,12 +287,12 @@ app.get('/camera/:id', verifyToken, async (req, res) => {
     }
 });
 
-app.post('/block', async (req, res) => {
-    const ip = req.body.ip;
+app.get('/blockip', async (req, res) => {
+    // const ip = req.body.ip;
 
     try {
         const newBlock = await db.Access.create({
-            ip: ip
+            ip: "172.31.240.1"
         });
 
         if(newBlock) {
