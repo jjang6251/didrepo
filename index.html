@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DID-JWT Demo</title>
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <title>Open Camera</title>
+    <script>
+        async function openCamera() {
+            const token = 'your_authorization_token'; // 실제 토큰 값으로 변경
+
+            try {
+                const response = await fetch('https://mongoljune.shop/camera/2', { // `id` 부분은 원하는 값으로 변경
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `${token}`, // Authorization 헤더에 토큰 추가
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.address) {
+                    // 주소를 새 탭에서 엽니다
+                    window.open(data.address, '_blank');
+                } else {
+                    alert('Camera address not found.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while fetching the camera address.');
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>DID-JWT Demo</h1>
-    <button onclick="connectWallet()">Connect MetaMask</button>
-
-    <h2>Create DID JWT</h2>
-    <input type="text" id="did" placeholder="Enter DID">
-    <button onclick="createJWT()">Create JWT</button>
-
-    <h2>Verify DID JWT</h2>
-    <input type="text" id="jwt" placeholder="Enter JWT">
-    <button onclick="verifyJWT()">Verify JWT</button>
-    <div id="verificationResult"></div>
-
-    <script src="app.js"></script>
+    <h1>Camera Access</h1>
+    <button onclick="openCamera()">Open Camera</button>
 </body>
 </html>

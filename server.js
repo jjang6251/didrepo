@@ -254,9 +254,9 @@ app.get('/iotlist', verifyToken, async (req, res) => {
     }
 });
 
-app.get('/camera/:id', async (req, res) => {
-    // const userid = req.cookie_id;
-    const userid = '3750080222';
+app.get('/camera/:id', verifyToken, async (req, res) => {
+    const userid = req.cookie_id;
+    // const userid = '3750080222';
     const id = req.params.id;
 
 
