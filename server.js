@@ -10,6 +10,7 @@ const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const db = require('./models');
 const { where } = require('sequelize');
+const e = require('express');
 
 dotenv.config();
 
@@ -239,18 +240,18 @@ app.get('/iotlist', verifyToken, async (req, res) => {
 
     try {
         const iotlist = await db.Iot.findAll({
-          where: { kakaoid: userid }
+            where: { kakaoid: userid }
         });
         const listCount = iotlist.length;
 
-    
+
         return res.status(200).json({
             data: iotlist,
             listCount: listCount
         });
-      } catch (error) {
+    } catch (error) {
         console.error('Error finding users:', error);
-      }
+    }
 });
 
 app.get('/camera/:id', async (req, res) => {
@@ -285,5 +286,53 @@ app.get('/camera/:id', async (req, res) => {
         res.status(500).json({ message: "An error occurred" });
     }
 });
+
+app.post('/block', async (req, res) => {
+    const ip = req.body.ip;
+
+    try {
+        const newBlock = await db.Access.create({
+            ip: ip
+        });
+
+        if(newBlock) {
+            return res.status(201).json({ message: "ip blocked" });
+        } else {
+            return res.status(404).json({ message: "fail to block" });
+        }
+        
+    } catch (error) {
+        res.status(500).json(error);
+    }
+});
+
+app.get('/block', async(req, res) => {
+    try {
+        const findData = await db.Access.findAll();
+        return res.status(200).json(findData);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+});
+
+app.delete('/block', async(req, res) => {
+    const ipid = req.body.ipid;
+
+    try {
+        const deleteData = await db.Access.destroy({
+            where: {
+                id: ipid
+            }
+        });
+
+        if(deleteData) {
+            return res.status(200).json({message: "delete"});
+        } else {
+            return res.status(404).json({message: "fail(삭제하려는 ip 없음)"});
+        }
+    } catch (error) {
+        res.status(500).json(error);
+    }
+})
 
 app.listen(PORT, () => console.log(`${PORT}port connected`));
